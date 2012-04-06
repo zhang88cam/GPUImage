@@ -61,6 +61,18 @@
     
 	switch (index)
 	{
+        case GPUIMAGE_XSOBEL: cell.textLabel.text = @"Sobel X"; break;
+		case GPUIMAGE_YSOBEL: cell.textLabel.text = @"Sobel Y"; break;
+        case GPUIMAGE_BOTHSOBEL: cell.textLabel.text = @"Sobel Both"; break;
+        case GPUIMAGE_ADDSOBEL: cell.textLabel.text = @"Sobel Add"; break;
+        case GPUIMAGE_Inverse: cell.textLabel.text = @"Sobel Inverse"; break;
+        case GPUIMAGE_LAPLACIAN: cell.textLabel.text = @"Laplacian"; break;
+
+        
+        
+        
+        
+        
 		case GPUIMAGE_SATURATION: cell.textLabel.text = @"Saturation"; break;
 		case GPUIMAGE_CONTRAST: cell.textLabel.text = @"Contrast"; break;
 		case GPUIMAGE_BRIGHTNESS: cell.textLabel.text = @"Brightness"; break;
@@ -81,7 +93,8 @@
 		case GPUIMAGE_POLARPIXELLATE: cell.textLabel.text = @"Polar pixellate"; break;
 		case GPUIMAGE_CROSSHATCH: cell.textLabel.text = @"Crosshatch"; break;
 		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel edge detection"; break;
-		case GPUIMAGE_SKETCH: cell.textLabel.text = @"Sketch"; break;
+        case GPUIMAGE_SKETCH: cell.textLabel.text = @"Sobel Inverse"; break;
+
 		case GPUIMAGE_TOON: cell.textLabel.text = @"Toon"; break;
 		case GPUIMAGE_CGA: cell.textLabel.text = @"CGA colorspace"; break;
 		case GPUIMAGE_POSTERIZE: cell.textLabel.text = @"Posterize"; break;

@@ -1,5 +1,6 @@
 #import "ShowcaseFilterViewController.h"
-
+#import "SobelEdgeXGradientFilter.h"
+#import "GPULaplacianFilter.h"
 @implementation ShowcaseFilterViewController
 
 #pragma mark -
@@ -55,6 +56,84 @@
 
     switch (filterType)
     {
+        case GPUIMAGE_XSOBEL:
+        {
+        self.title = @"Sobel X";
+        self.filterSettingsSlider.hidden = NO;
+        
+        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setMinimumValue:0.0];
+        [self.filterSettingsSlider setMaximumValue:1.0];
+        
+        filter = [[SobelEdgeXGradientFilter alloc] init];
+        }; break;
+        
+        case GPUIMAGE_YSOBEL:
+        {
+        self.title = @"Sobel Y";
+        self.filterSettingsSlider.hidden = NO;
+        
+        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setMinimumValue:0.0];
+        [self.filterSettingsSlider setMaximumValue:1.0];
+        
+        filter = [[SobelEdgeXGradientFilter alloc] initY];
+        }; break;
+        
+        case GPUIMAGE_BOTHSOBEL:
+        {
+        self.title = @"Sobel Both";
+        self.filterSettingsSlider.hidden = NO;
+        
+        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setMinimumValue:0.0];
+        [self.filterSettingsSlider setMaximumValue:1.0];
+        
+        filter = [[SobelEdgeXGradientFilter alloc] initBoth];
+        }; break;
+        
+        case GPUIMAGE_ADDSOBEL:
+        {
+        self.title = @"Sobel Add";
+        self.filterSettingsSlider.hidden = NO;
+        
+        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setMinimumValue:0.0];
+        [self.filterSettingsSlider setMaximumValue:1.0];
+        
+        filter = [[SobelEdgeXGradientFilter alloc] initAdd];
+        }; break;
+        
+        case GPUIMAGE_Inverse:
+        {
+        self.title = @"Sobel Inverse";
+        self.filterSettingsSlider.hidden = NO;
+        
+        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setMinimumValue:0.0];
+        [self.filterSettingsSlider setMaximumValue:1.0];
+        
+        filter = [[SobelEdgeXGradientFilter alloc] initInverse];
+        }; break;
+        
+        
+        
+        case GPUIMAGE_LAPLACIAN:
+        {
+        self.title = @"Sobel Inverse";
+        self.filterSettingsSlider.hidden = NO;
+        
+        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setMinimumValue:0.0];
+        [self.filterSettingsSlider setMaximumValue:1.0];
+        
+        filter = [[GPULaplacianFilter alloc] init];
+        }; break;
+        
+        
+        
+        
+        
         case GPUIMAGE_SEPIA:
         {
             self.title = @"Sepia Tone";
@@ -569,6 +648,13 @@
 {
     switch(filterType)
     {
+        case GPUIMAGE_BOTHSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_XSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_YSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_ADDSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_Inverse: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_LAPLACIAN: [(GPULaplacianFilter *)filter setBlurSize:[(UISlider *)sender value]]; break;
+
         case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;
         case GPUIMAGE_POLARPIXELLATE: [(GPUImagePolarPixellateFilter *)filter setPixelSize:CGSizeMake([(UISlider *)sender value], [(UISlider *)sender value])]; break;

@@ -16,7 +16,11 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
  {
      float luminance = dot(texture2D(inputImageTexture, textureCoordinate).rgb, W);
      
-     gl_FragColor = vec4(vec3(luminance), 1.0);
+//     gl_FragColor = vec4(vec3(luminance), 1.0);
+    vec4 color = texture2D(inputImageTexture, textureCoordinate);
+//    gl_FragColor = vec4(texture2D(inputImageTexture, textureCoordinate).rgb, 1.0);
+ gl_FragColor  = color;
+
  }
 );
 
