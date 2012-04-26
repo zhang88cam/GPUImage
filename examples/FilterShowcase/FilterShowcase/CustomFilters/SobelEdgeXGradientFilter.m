@@ -81,8 +81,11 @@ NSString *const kSobelEdgeXGradientFragmentShaderString = SHADER_STRING
     float ip10 = texture2D(inputImageTexture, rightTextureCoordinate).r;
     float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).r;
     float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
-    float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
+//    float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
     float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+     
+     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+//     float v = 3.0 *im1m1 + 10.0 * im10 + 3 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
     
 //    float mag = length(vec2(h, v));
     
@@ -121,8 +124,11 @@ NSString *const kSobelEdgeYGradientFragmentShaderString = SHADER_STRING
  float ip10 = texture2D(inputImageTexture, rightTextureCoordinate).r;
  float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).r;
  float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
- float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
- float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+// float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
+// float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+     
+     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
  
  //    float mag = length(vec2(h, v));
  
@@ -163,9 +169,12 @@ NSString *const kSobelEdgeBothGradientFragmentShaderString = SHADER_STRING
  float ip10 = texture2D(inputImageTexture, rightTextureCoordinate).r;
  float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).r;
  float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
- float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
- float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+// float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
+// float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
  
+     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+     
  float mag = length(vec2(h, v));
  gl_FragColor = vec4(vec3(mag) * computeEdgeFactor,1);
 // float i0000   = texture2D(inputImageTexture, textureCoordinate).r;
@@ -247,9 +256,11 @@ NSString *const kSobelEdgeAddGradientFragmentShaderString = SHADER_STRING
  float ip10 = texture2D(inputImageTexture, rightTextureCoordinate).r;
  float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).r;
  float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
- float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
- float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+// float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
+// float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
  
+     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
  float mag = length(vec2(h, v));
  color += vec4(vec3(mag) * computeEdgeFactor,1);
  gl_FragColor = color;
@@ -288,14 +299,17 @@ NSString *const kSobelEdgeInverseGradientFragmentShaderString = SHADER_STRING
  float ip10 = texture2D(inputImageTexture, rightTextureCoordinate).r;
  float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).r;
  float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
- float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
- float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
- 
+// float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
+// float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+     
  float mag = 1.0 - length(vec2(h, v));
  gl_FragColor = vec4(vec3(mag) * computeEdgeFactor,1);
 
  }
  );
+/*
 
 NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
 (
@@ -329,14 +343,16 @@ NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
  float ip10 = texture2D(inputImageTexture, rightTextureCoordinate).r;
  float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).r;
  float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
- float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
- float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
- 
+// float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
+// float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+     float v = 3.0 *im1m1 + 10.0 * im10 + 3 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
  float mag = 1.0 - length(vec2(h, v));
  gl_FragColor = vec4(vec3(mag) * computeEdgeFactor,1);
  
  }
  );
+ */
 
 
 @implementation SobelEdgeXGradientFilter
@@ -344,6 +360,8 @@ NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
 @synthesize imageWidthFactor = _imageWidthFactor; 
 @synthesize imageHeightFactor = _imageHeightFactor; 
 @synthesize edgeFactor = edgeFactor_;
+@synthesize kernel3 = kernel3_;
+
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -414,7 +432,7 @@ NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
-
+    
     hasOverriddenImageSizeFactor = NO;
     
     imageWidthFactorUniform = [secondFilterProgram uniformIndex:@"imageWidthFactor"];
@@ -467,6 +485,24 @@ NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
     [GPUImageOpenGLESContext useImageProcessingContext];
     [secondFilterProgram use];
     glUniform1f(edgeUnifrom, edgeFactor_);
+}
+
+-(void)setKernel3:(NSArray *)kernelValue {
+    kernel3_ = [NSArray arrayWithArray:kernelValue];
+    int count = [kernelValue count];
+    
+    int *kernel = malloc(sizeof(int) * count);
+    for (int i = 0; i < count; i++) {
+        kernel[i] = [[kernel3_ objectAtIndex:i] integerValue];
+    }
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [secondFilterProgram use];
+    glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
+    
+    
+ 
+
 }
 @end
 

@@ -66,7 +66,8 @@
         case GPUIMAGE_BOTHSOBEL: cell.textLabel.text = @"Sobel Both"; break;
         case GPUIMAGE_ADDSOBEL: cell.textLabel.text = @"Sobel Add"; break;
         case GPUIMAGE_Inverse: cell.textLabel.text = @"Sobel Inverse"; break;
-        case GPUIMAGE_LAPLACIAN: cell.textLabel.text = @"Laplacian"; break;
+        case GPUIMAGE_GAUSSIAN1: cell.textLabel.text = @"Guassian"; break;
+        case GPUIMAGE_LAPLACIAN:cell.textLabel.text = @"Laplacian"; break;
 
         
         

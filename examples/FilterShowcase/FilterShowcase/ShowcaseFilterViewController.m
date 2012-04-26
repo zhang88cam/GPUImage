@@ -1,6 +1,7 @@
 #import "ShowcaseFilterViewController.h"
 #import "SobelEdgeXGradientFilter.h"
-#import "GPULaplacianFilter.h"
+#import "GPUGaussianFilter.h"
+#import "GPULapacianFilter.h"
 @implementation ShowcaseFilterViewController
 
 #pragma mark -
@@ -118,16 +119,28 @@
         
         
         
-        case GPUIMAGE_LAPLACIAN:
+        case GPUIMAGE_GAUSSIAN1:
         {
-        self.title = @"Sobel Inverse";
+        self.title = @"Gaussian";
         self.filterSettingsSlider.hidden = NO;
         
         [self.filterSettingsSlider setValue:0.0];
         [self.filterSettingsSlider setMinimumValue:0.0];
         [self.filterSettingsSlider setMaximumValue:1.0];
         
-        filter = [[GPULaplacianFilter alloc] init];
+        filter = [[GPUGaussianFilter alloc] init];
+        }; break;
+            
+        case GPUIMAGE_LAPLACIAN:
+        {
+            self.title = @"Laplacian";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setValue:0.0];
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            
+            filter = [[GPULapacianFilter alloc] initAdd];
         }; break;
         
         
@@ -653,7 +666,7 @@
         case GPUIMAGE_YSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
         case GPUIMAGE_ADDSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
         case GPUIMAGE_Inverse: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_LAPLACIAN: [(GPULaplacianFilter *)filter setBlurSize:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_GAUSSIAN1: [(GPUGaussianFilter *)filter setBlurSize:[(UISlider *)sender value]]; break;
 
         case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;

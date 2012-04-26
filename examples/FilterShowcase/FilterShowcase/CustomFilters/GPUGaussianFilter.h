@@ -8,7 +8,7 @@
 
 #import "GPUImageTwoPassFilter.h"
 
-@interface GPULaplacianFilter : GPUImageTwoPassFilter
+@interface GPUGaussianFilter : GPUImageTwoPassFilter
 {
     GLint imageWidthFactorUniform, imageHeightFactorUniform;
     BOOL hasOverriddenImageSizeFactor;

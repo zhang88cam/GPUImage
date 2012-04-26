@@ -5,15 +5,17 @@
 //  Created by Zitao Xiong on 4/6/12.
 //  Copyright (c) 2012 Cell Phone. All rights reserved.
 //
+#define KERNEL_SIZE 3
+#define KERNEL_LENGTH (KERNEL_SIZE * KERNEL_SIZE)
 
-#import "GPULaplacianFilter.h"
+#import "GPUGaussianFilter.h"
 
-NSString *const kGPUImageLaplacianVertexShaderString = SHADER_STRING
+NSString *const kGPUImageGaussianVertexShaderString = SHADER_STRING
 (
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
  
- const lowp int GAUSSIAN_SAMPLES = 9;
+ const lowp int GAUSSIAN_SAMPLES = KERNEL_LENGTH;
  
  uniform highp float texelWidthOffset; 
  uniform highp float texelHeightOffset;
@@ -53,11 +55,11 @@ NSString *const kGPUImageLaplacianVertexShaderString = SHADER_STRING
  }
  );
 
-NSString *const kGPUImageLaplacianFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageGaussianFragmentShaderString = SHADER_STRING
 (
  uniform sampler2D inputImageTexture;
  
- const lowp int GAUSSIAN_SAMPLES = 9;
+ const lowp int GAUSSIAN_SAMPLES = KERNEL_LENGTH;
  
  varying highp vec2 textureCoordinate;
  varying highp vec2 blurCoordinates[GAUSSIAN_SAMPLES];
@@ -70,23 +72,29 @@ NSString *const kGPUImageLaplacianFragmentShaderString = SHADER_STRING
  void main() {
      lowp vec4 sum = vec4(0.0);
      
-     sum += texture2D(inputImageTexture, blurCoordinates[0]) * kernelValuesOutput[0];
-     sum += texture2D(inputImageTexture, blurCoordinates[1]) * kernelValuesOutput[1];
-     sum += texture2D(inputImageTexture, blurCoordinates[2]) * kernelValuesOutput[2];
-     sum += texture2D(inputImageTexture, blurCoordinates[3]) * kernelValuesOutput[3];
-     sum += texture2D(inputImageTexture, blurCoordinates[4]) * kernelValuesOutput[4];
-     sum += texture2D(inputImageTexture, blurCoordinates[5]) * kernelValuesOutput[5];
-     sum += texture2D(inputImageTexture, blurCoordinates[6]) * kernelValuesOutput[6];
-     sum += texture2D(inputImageTexture, blurCoordinates[7]) * kernelValuesOutput[7];
-     sum += texture2D(inputImageTexture, blurCoordinates[8]) * kernelValuesOutput[8];
-     lowp vec4 color = texture2D(inputImageTexture, blurCoordinates[4]);
+     for (int i = 0; i < GAUSSIAN_SAMPLES; i ++)
+     {
+         sum += texture2D(inputImageTexture, blurCoordinates[i]) * kernelValuesOutput[i];
+     }
+//     
+//     sum += texture2D(inputImageTexture, blurCoordinates[0]) * kernelValuesOutput[0];
+//     sum += texture2D(inputImageTexture, blurCoordinates[1]) * kernelValuesOutput[1];
+//     sum += texture2D(inputImageTexture, blurCoordinates[2]) * kernelValuesOutput[2];
+//     sum += texture2D(inputImageTexture, blurCoordinates[3]) * kernelValuesOutput[3];
+//     sum += texture2D(inputImageTexture, blurCoordinates[4]) * kernelValuesOutput[4];
+//     sum += texture2D(inputImageTexture, blurCoordinates[5]) * kernelValuesOutput[5];
+//     sum += texture2D(inputImageTexture, blurCoordinates[6]) * kernelValuesOutput[6];
+//     sum += texture2D(inputImageTexture, blurCoordinates[7]) * kernelValuesOutput[7];
+//     sum += texture2D(inputImageTexture, blurCoordinates[8]) * kernelValuesOutput[8];
+     int median = (GAUSSIAN_SAMPLES - 1) / 2;
+     lowp vec4 color = texture2D(inputImageTexture, blurCoordinates[median]);
      
      color = color * (1.0 - strength) + sum * strength;
      gl_FragColor = color;
  }
  );
 
-@implementation GPULaplacianFilter
+@implementation GPUGaussianFilter
 @synthesize blurSize = _blurSize;
 @synthesize imageWidthFactor = _imageWidthFactor; 
 @synthesize imageHeightFactor = _imageHeightFactor; 
@@ -98,10 +106,10 @@ NSString *const kGPUImageLaplacianFragmentShaderString = SHADER_STRING
               secondStageVertexShaderFromString:(NSString *)secondStageVertexShaderString
             secondStageFragmentShaderFromString:(NSString *)secondStageFragmentShaderString {
     
-    if (!(self = [super initWithFirstStageVertexShaderFromString:firstStageVertexShaderString ? firstStageVertexShaderString : kGPUImageLaplacianVertexShaderString
-                              firstStageFragmentShaderFromString:firstStageFragmentShaderString ? firstStageFragmentShaderString : kGPUImageLaplacianFragmentShaderString
-                               secondStageVertexShaderFromString:secondStageVertexShaderString ? secondStageVertexShaderString : kGPUImageLaplacianVertexShaderString
-                             secondStageFragmentShaderFromString:secondStageFragmentShaderString ? secondStageFragmentShaderString : kGPUImageLaplacianFragmentShaderString])) {
+    if (!(self = [super initWithFirstStageVertexShaderFromString:firstStageVertexShaderString ? firstStageVertexShaderString : kGPUImageGaussianVertexShaderString
+                              firstStageFragmentShaderFromString:firstStageFragmentShaderString ? firstStageFragmentShaderString : kGPUImageGaussianFragmentShaderString
+                               secondStageVertexShaderFromString:secondStageVertexShaderString ? secondStageVertexShaderString : kGPUImageGaussianVertexShaderString
+                             secondStageFragmentShaderFromString:secondStageFragmentShaderString ? secondStageFragmentShaderString : kGPUImageGaussianFragmentShaderString])) {
         return nil;
     }
     
@@ -146,8 +154,13 @@ NSString *const kGPUImageLaplacianFragmentShaderString = SHADER_STRING
 #pragma mark Getters and Setters
 
 - (void) setKernel:(GLfloat[]) kernels {
-    GLsizei gaussianLength = 9;
-    GLfloat gaussians[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    GLsizei gaussianLength = KERNEL_LENGTH;
+//    GLfloat gaussians[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    GLfloat *gaussians = malloc(sizeof(GLfloat) * gaussianLength);
+    for (int i = 0; i < gaussianLength; i++) {
+        gaussians [i] = i + 1;
+    }
+
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
     glUniform1fv(horizontalGaussianArrayUniform, gaussianLength, gaussians);
@@ -160,19 +173,15 @@ NSString *const kGPUImageLaplacianFragmentShaderString = SHADER_STRING
 
 - (void) setGaussianValues {
 
-    //GLfloat kernels[] = { 0.0, 1.0, 0, 1, -4, 1, 0, 1, 0 };
-//    GLfloat kernels[] = { 0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05 };
-//    GLsizei gaussianLength = 9;
-//    GLfloat gaussians[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-//    [GPUImageOpenGLESContext useImageProcessingContext];
-//    [filterProgram use];
-//    glUniform1fv(horizontalGaussianArrayUniform, gaussianLength, gaussians);
-//    glUniform1fv(kernelUniform, gaussianLength, kernels);
-//
-//    [secondFilterProgram use];
-//    glUniform1fv(verticalGaussianArrayUniform, gaussianLength, gaussians);
-//    glUniform1fv(kernelUniform, gaussianLength, kernels);
-    GLfloat kernel[]  = { 0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05 };
+//    GLfloat kernel[]  = { 0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05 };
+    GLfloat *kernel = malloc(sizeof(GLfloat) * KERNEL_LENGTH);
+//    int vector[5] = {1.0, 4.0, 6.0, 4.0, 1.0};
+    int vector[KERNEL_SIZE] = {1.0, 2.0, 1.0};
+    for (int i = 0 ; i < KERNEL_SIZE; i++) {
+        for (int j = 0; j < KERNEL_SIZE; j++) {
+            kernel[i * KERNEL_SIZE + j] = vector[i] * vector [j] / 16.0;
+        }
+    }
     [self setKernel: kernel];
 }
 

@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		099817A9152F8142002913C9 /* SobelEdgeXGradientFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 099817A8152F8142002913C9 /* SobelEdgeXGradientFilter.m */; };
-		099817AC152F9A01002913C9 /* GPULaplacianFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 099817AB152F9A01002913C9 /* GPULaplacianFilter.m */; };
+		099817AC152F9A01002913C9 /* GPUGaussianFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 099817AB152F9A01002913C9 /* GPUGaussianFilter.m */; };
 		0D69488E1501F71900206FF8 /* SampleConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D69488D1501F71900206FF8 /* SampleConfiguration.plist */; };
+		198D7692154703C200DA930C /* GPULapacianFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 198D7691154703C200DA930C /* GPULapacianFilter.m */; };
 		BC982B0714F046AC0001FF6F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B0614F046AC0001FF6F /* UIKit.framework */; };
 		BC982B0914F046AC0001FF6F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B0814F046AC0001FF6F /* Foundation.framework */; };
 		BC982B0B14F046AC0001FF6F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B0A14F046AC0001FF6F /* CoreGraphics.framework */; };
@@ -56,9 +57,11 @@
 /* Begin PBXFileReference section */
 		099817A7152F8142002913C9 /* SobelEdgeXGradientFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SobelEdgeXGradientFilter.h; sourceTree = "<group>"; };
 		099817A8152F8142002913C9 /* SobelEdgeXGradientFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SobelEdgeXGradientFilter.m; sourceTree = "<group>"; };
-		099817AA152F9A01002913C9 /* GPULaplacianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPULaplacianFilter.h; sourceTree = "<group>"; };
-		099817AB152F9A01002913C9 /* GPULaplacianFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPULaplacianFilter.m; sourceTree = "<group>"; };
+		099817AA152F9A01002913C9 /* GPUGaussianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUGaussianFilter.h; sourceTree = "<group>"; };
+		099817AB152F9A01002913C9 /* GPUGaussianFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUGaussianFilter.m; sourceTree = "<group>"; };
 		0D69488D1501F71900206FF8 /* SampleConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SampleConfiguration.plist; sourceTree = "<group>"; };
+		198D7690154703C200DA930C /* GPULapacianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPULapacianFilter.h; sourceTree = "<group>"; };
+		198D7691154703C200DA930C /* GPULapacianFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPULapacianFilter.m; sourceTree = "<group>"; };
 		BC982B0214F046AC0001FF6F /* FilterShowcase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FilterShowcase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC982B0614F046AC0001FF6F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BC982B0814F046AC0001FF6F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -109,8 +112,10 @@
 			children = (
 				099817A7152F8142002913C9 /* SobelEdgeXGradientFilter.h */,
 				099817A8152F8142002913C9 /* SobelEdgeXGradientFilter.m */,
-				099817AA152F9A01002913C9 /* GPULaplacianFilter.h */,
-				099817AB152F9A01002913C9 /* GPULaplacianFilter.m */,
+				198D7690154703C200DA930C /* GPULapacianFilter.h */,
+				198D7691154703C200DA930C /* GPULapacianFilter.m */,
+				099817AA152F9A01002913C9 /* GPUGaussianFilter.h */,
+				099817AB152F9A01002913C9 /* GPUGaussianFilter.m */,
 			);
 			path = CustomFilters;
 			sourceTree = "<group>";
@@ -283,7 +288,8 @@
 				BC982B3614F04B3A0001FF6F /* ShowcaseFilterViewController.m in Sources */,
 				BC982B3F14F05DC20001FF6F /* ShowcaseFilterListController.m in Sources */,
 				099817A9152F8142002913C9 /* SobelEdgeXGradientFilter.m in Sources */,
-				099817AC152F9A01002913C9 /* GPULaplacianFilter.m in Sources */,
+				099817AC152F9A01002913C9 /* GPUGaussianFilter.m in Sources */,
+				198D7692154703C200DA930C /* GPULapacianFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
