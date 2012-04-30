@@ -1,6 +1,9 @@
 #import "SobelEdgeXGradientFilter.h"
 #import "GPUImageGrayscaleFilter.h"
 
+
+#define KERNEL_SIZE 3
+#define KERNEL_LENGTH (KERNEL_SIZE * KERNEL_SIZE)
 // Override vertex shader to remove dependent texture reads 
 NSString *const kSobelEdgeXGradientVertexShaderString = SHADER_STRING
 (
@@ -21,9 +24,14 @@ NSString *const kSobelEdgeXGradientVertexShaderString = SHADER_STRING
  varying vec2 bottomTextureCoordinate;
  varying vec2 bottomLeftTextureCoordinate;
  varying vec2 bottomRightTextureCoordinate;
- uniform float edgeFactor;
  
+ uniform float edgeFactor;
  varying float computeEdgeFactor;
+ 
+ uniform highp float kernelValues[KERNEL_LENGTH];
+ varying highp float kernelValuesOutput[KERNEL_LENGTH];
+ 
+
  
  void main()
  {
@@ -46,7 +54,15 @@ NSString *const kSobelEdgeXGradientVertexShaderString = SHADER_STRING
      bottomLeftTextureCoordinate = inputTextureCoordinate.xy - widthHeightStep;
      bottomRightTextureCoordinate = inputTextureCoordinate.xy + widthNegativeHeightStep;
  
- computeEdgeFactor = edgeFactor;
+     computeEdgeFactor = edgeFactor;     
+//     for (lowp int i = 0; i < 9; i++)
+//     {
+//         printf("%f\n", kernelValues[i]);
+//     }
+     for (lowp int i = 0; i < KERNEL_LENGTH; i++) {
+         kernelValuesOutput[i] = kernelValues[i];
+     }
+
 }
 );
 
@@ -69,6 +85,10 @@ NSString *const kSobelEdgeXGradientFragmentShaderString = SHADER_STRING
 
  uniform sampler2D inputImageTexture;
  varying float computeEdgeFactor;
+ 
+ varying highp float kernelValuesOutput[KERNEL_LENGTH];
+
+
 
  void main()
  {
@@ -82,10 +102,16 @@ NSString *const kSobelEdgeXGradientFragmentShaderString = SHADER_STRING
     float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).r;
     float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
 //    float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
-    float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+//    float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
      
-     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+//     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
 //     float v = 3.0 *im1m1 + 10.0 * im10 + 3 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+     float h = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[1] * i0p1 + kernelValuesOutput[2] * ip1p1
+             + kernelValuesOutput[3] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[5] * ip10
+             + kernelValuesOutput[6] * im1m1 + kernelValuesOutput[7] * i0m1 + kernelValuesOutput[8] * ip1m1;
+
+
+
     
 //    float mag = length(vec2(h, v));
     
@@ -112,6 +138,8 @@ NSString *const kSobelEdgeYGradientFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  varying float computeEdgeFactor;
+ 
+ varying highp float kernelValuesOutput[KERNEL_LENGTH];
 
  void main()
  {
@@ -127,12 +155,19 @@ NSString *const kSobelEdgeYGradientFragmentShaderString = SHADER_STRING
 // float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
 // float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
      
-     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
-     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+//     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+//     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+     float h = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[1] * i0p1 + kernelValuesOutput[2] * ip1p1
+     + kernelValuesOutput[3] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[5] * ip10
+     + kernelValuesOutput[6] * im1m1 + kernelValuesOutput[7] * i0m1 + kernelValuesOutput[8] * ip1m1;
+     
+     float v = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[3] * i0p1 + kernelValuesOutput[6] * ip1p1
+     + kernelValuesOutput[1] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[7] * ip10
+     + kernelValuesOutput[2] * im1m1 + kernelValuesOutput[5] * i0m1 + kernelValuesOutput[8] * ip1m1;
  
  //    float mag = length(vec2(h, v));
  
- gl_FragColor = vec4(vec3(v) * computeEdgeFactor, 1.0);
+ gl_FragColor = vec4(vec3(h) * computeEdgeFactor, 1.0);
  }
  );
 
@@ -156,6 +191,9 @@ NSString *const kSobelEdgeBothGradientFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  
  varying float computeEdgeFactor;
+ 
+ varying highp float kernelValuesOutput[KERNEL_LENGTH];
+
  void main()
  {
  vec4 color;
@@ -172,8 +210,15 @@ NSString *const kSobelEdgeBothGradientFragmentShaderString = SHADER_STRING
 // float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
 // float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
  
-     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
-     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+//     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+//     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+     float h = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[1] * i0p1 + kernelValuesOutput[2] * ip1p1
+     + kernelValuesOutput[3] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[5] * ip10
+     + kernelValuesOutput[6] * im1m1 + kernelValuesOutput[7] * i0m1 + kernelValuesOutput[8] * ip1m1;
+     
+     float v = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[3] * i0p1 + kernelValuesOutput[6] * ip1p1
+     + kernelValuesOutput[1] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[7] * ip10
+     + kernelValuesOutput[2] * im1m1 + kernelValuesOutput[5] * i0m1 + kernelValuesOutput[8] * ip1m1;
      
  float mag = length(vec2(h, v));
  gl_FragColor = vec4(vec3(mag) * computeEdgeFactor,1);
@@ -243,6 +288,9 @@ NSString *const kSobelEdgeAddGradientFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  
  varying float computeEdgeFactor;
+ 
+ varying highp float kernelValuesOutput[KERNEL_LENGTH];
+
  void main()
  {
  vec4 color;
@@ -259,8 +307,17 @@ NSString *const kSobelEdgeAddGradientFragmentShaderString = SHADER_STRING
 // float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
 // float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
  
-     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
-     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+//     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+//     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+     
+     float h = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[1] * i0p1 + kernelValuesOutput[2] * ip1p1
+     + kernelValuesOutput[3] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[5] * ip10
+     + kernelValuesOutput[6] * im1m1 + kernelValuesOutput[7] * i0m1 + kernelValuesOutput[8] * ip1m1;
+     
+     float v = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[3] * i0p1 + kernelValuesOutput[6] * ip1p1
+     + kernelValuesOutput[1] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[7] * ip10
+     + kernelValuesOutput[2] * im1m1 + kernelValuesOutput[5] * i0m1 + kernelValuesOutput[8] * ip1m1;
+     
  float mag = length(vec2(h, v));
  color += vec4(vec3(mag) * computeEdgeFactor,1);
  gl_FragColor = color;
@@ -286,6 +343,9 @@ NSString *const kSobelEdgeInverseGradientFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  
  varying float computeEdgeFactor;
+ 
+ varying highp float kernelValuesOutput[KERNEL_LENGTH];
+
  void main()
  {
  vec4 color;
@@ -301,8 +361,15 @@ NSString *const kSobelEdgeInverseGradientFragmentShaderString = SHADER_STRING
  float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
 // float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
 // float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
-     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
-     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+//     float h = 3.0 * im1p1 + 10.0 * i0p1 + 3.0 * ip1p1 - im1m1 - 10.0 * i0m1 - 3.0 * ip1m1;
+//     float v = 3.0 *im1m1 + 10.0 * im10 + 3.0 * im1p1 - ip1m1 - 10.0 * ip10 - 3.0 * ip1p1;
+     float h = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[1] * i0p1 + kernelValuesOutput[2] * ip1p1
+     + kernelValuesOutput[3] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[5] * ip10
+     + kernelValuesOutput[6] * im1m1 + kernelValuesOutput[7] * i0m1 + kernelValuesOutput[8] * ip1m1;
+     
+     float v = kernelValuesOutput[0] * im1p1 + kernelValuesOutput[3] * i0p1 + kernelValuesOutput[6] * ip1p1
+     + kernelValuesOutput[1] * im10 + kernelValuesOutput[4] * i00 + kernelValuesOutput[7] * ip10
+     + kernelValuesOutput[2] * im1m1 + kernelValuesOutput[5] * i0m1 + kernelValuesOutput[8] * ip1m1;
      
  float mag = 1.0 - length(vec2(h, v));
  gl_FragColor = vec4(vec3(mag) * computeEdgeFactor,1);
@@ -360,7 +427,6 @@ NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
 @synthesize imageWidthFactor = _imageWidthFactor; 
 @synthesize imageHeightFactor = _imageHeightFactor; 
 @synthesize edgeFactor = edgeFactor_;
-@synthesize kernel3 = kernel3_;
 
 
 #pragma mark -
@@ -438,9 +504,42 @@ NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
     imageWidthFactorUniform = [secondFilterProgram uniformIndex:@"imageWidthFactor"];
     imageHeightFactorUniform = [secondFilterProgram uniformIndex:@"imageHeightFactor"];
     edgeUnifrom = [secondFilterProgram uniformIndex:@"edgeFactor"];
-    self.edgeFactor = 0.0;
+    kernelUniform = [secondFilterProgram uniformIndex:@"kernelValues"];
+//    NSLog(@"+++++++++%d, %d, %d, %d", imageWidthFactorUniform, imageHeightFactorUniform, edgeUnifrom, kernelUniform);
+    self.edgeFactor = 1.0;
+    [self setKernel: nil];
     
     return self;
+}
+
+- (void) setKernel:(NSArray *)customKernel
+{
+
+    GLfloat *kernel = malloc(sizeof(GLfloat) * KERNEL_LENGTH);
+    if (!customKernel) {
+        //    int vector[5] = {1.0, 4.0, 6.0, 4.0, 1.0};
+        int vector[KERNEL_SIZE] = {1.0, 2.0, 1.0};
+        for (int i = 0; i < KERNEL_SIZE; i++) {
+            kernel[i] = vector[i];
+        }
+        for (int i = 0; i < KERNEL_SIZE; i ++) {
+            kernel[3 + i] = 0.0;
+        }
+        for (int i = 0; i < KERNEL_SIZE; i ++) {
+            kernel[6 + i] = vector[i];
+        }
+        
+    }
+    
+    int count = [customKernel count];
+    for (int i = 0; i < count; i++) {
+        kernel[i] = [[customKernel objectAtIndex:i] floatValue];
+    }
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [secondFilterProgram use];
+    glUniform1fv(kernelUniform, KERNEL_LENGTH, kernel);
+    
+
 }
 
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
@@ -454,6 +553,7 @@ NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
         [secondFilterProgram use];
         glUniform1f(imageWidthFactorUniform, 1.0 / _imageWidthFactor);
         glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
+        
     }
 }
 
@@ -487,22 +587,5 @@ NSString *const kSobelEdgeLaplacianFragmentShaderString = SHADER_STRING
     glUniform1f(edgeUnifrom, edgeFactor_);
 }
 
--(void)setKernel3:(NSArray *)kernelValue {
-    kernel3_ = [NSArray arrayWithArray:kernelValue];
-    int count = [kernelValue count];
-    
-    int *kernel = malloc(sizeof(int) * count);
-    for (int i = 0; i < count; i++) {
-        kernel[i] = [[kernel3_ objectAtIndex:i] integerValue];
-    }
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [secondFilterProgram use];
-    glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
-    
-    
- 
-
-}
 @end
 

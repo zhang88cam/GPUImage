@@ -76,23 +76,15 @@ NSString *const kGPUImageGaussianFragmentShaderString = SHADER_STRING
      {
          sum += texture2D(inputImageTexture, blurCoordinates[i]) * kernelValuesOutput[i];
      }
-//     
-//     sum += texture2D(inputImageTexture, blurCoordinates[0]) * kernelValuesOutput[0];
-//     sum += texture2D(inputImageTexture, blurCoordinates[1]) * kernelValuesOutput[1];
-//     sum += texture2D(inputImageTexture, blurCoordinates[2]) * kernelValuesOutput[2];
-//     sum += texture2D(inputImageTexture, blurCoordinates[3]) * kernelValuesOutput[3];
-//     sum += texture2D(inputImageTexture, blurCoordinates[4]) * kernelValuesOutput[4];
-//     sum += texture2D(inputImageTexture, blurCoordinates[5]) * kernelValuesOutput[5];
-//     sum += texture2D(inputImageTexture, blurCoordinates[6]) * kernelValuesOutput[6];
-//     sum += texture2D(inputImageTexture, blurCoordinates[7]) * kernelValuesOutput[7];
-//     sum += texture2D(inputImageTexture, blurCoordinates[8]) * kernelValuesOutput[8];
+
      int median = (GAUSSIAN_SAMPLES - 1) / 2;
      lowp vec4 color = texture2D(inputImageTexture, blurCoordinates[median]);
-     
+
      color = color * (1.0 - strength) + sum * strength;
      gl_FragColor = color;
  }
  );
+
 
 @implementation GPUGaussianFilter
 @synthesize blurSize = _blurSize;
@@ -122,10 +114,10 @@ NSString *const kGPUImageGaussianFragmentShaderString = SHADER_STRING
     verticalGaussianArrayUniform = [secondFilterProgram uniformIndex:@"gaussianValues"];
     verticalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
     verticalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
-    
-    kernelUniform = [filterProgram uniformIndex:@"kernelValues"];
+    horizontalKernelUniform = [filterProgram uniformIndex:@"kernelValues"];
+    kernelUniform = [secondFilterProgram uniformIndex:@"kernelValues"];
     self.blurSize = 1.0;
-    [self setGaussianValues];
+    [self setGaussianValues:nil];
     
     return self;
 }
@@ -156,30 +148,41 @@ NSString *const kGPUImageGaussianFragmentShaderString = SHADER_STRING
 - (void) setKernel:(GLfloat[]) kernels {
     GLsizei gaussianLength = KERNEL_LENGTH;
 //    GLfloat gaussians[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    GLfloat *gaussians = malloc(sizeof(GLfloat) * gaussianLength);
-    for (int i = 0; i < gaussianLength; i++) {
-        gaussians [i] = i + 1;
-    }
+
+    GLfloat gaussians[] = { 0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05 };
 
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1fv(horizontalGaussianArrayUniform, gaussianLength, gaussians);
-    glUniform1fv(kernelUniform, gaussianLength, kernels);
+//    glUniform1fv(horizontalGaussianArrayUniform, gaussianLength, gaussians);
+    glUniform1fv(horizontalKernelUniform, gaussianLength, kernels);
     
     [secondFilterProgram use];
-    glUniform1fv(verticalGaussianArrayUniform, gaussianLength, gaussians);
+//    glUniform1fv(verticalGaussianArrayUniform, gaussianLength, gaussians);
     glUniform1fv(kernelUniform, gaussianLength, kernels);
 }
 
-- (void) setGaussianValues {
-
-//    GLfloat kernel[]  = { 0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05 };
+- (void)setGaussianValues:(NSArray *)values{
+    //    GLfloat kernel[]  = { 0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05 };
     GLfloat *kernel = malloc(sizeof(GLfloat) * KERNEL_LENGTH);
-//    int vector[5] = {1.0, 4.0, 6.0, 4.0, 1.0};
-    int vector[KERNEL_SIZE] = {1.0, 2.0, 1.0};
-    for (int i = 0 ; i < KERNEL_SIZE; i++) {
-        for (int j = 0; j < KERNEL_SIZE; j++) {
-            kernel[i * KERNEL_SIZE + j] = vector[i] * vector [j] / 16.0;
+    if (!values) {
+        //    int vector[5] = {1.0, 4.0, 6.0, 4.0, 1.0};
+        int vector[KERNEL_SIZE] = {1.0, 2.0, 1.0};
+        for (int i = 0 ; i < KERNEL_SIZE; i++) {
+            for (int j = 0; j < KERNEL_SIZE; j++) {
+                kernel[i * KERNEL_SIZE + j] = vector[i] * vector [j] / 16.0;
+            }
+        }
+    }
+    else {
+        float sum = 0.0;
+        for (int i = 0; i < KERNEL_LENGTH; i++) {
+            kernel[i] = [[values objectAtIndex:i] floatValue];
+            sum += kernel[i];
+            
+        }
+        for (int i = 0; i < KERNEL_LENGTH; i++) {
+            kernel[i] = kernel[i] / sum;
+//            NSLog(@"%f", kernel[i]);
         }
     }
     [self setKernel: kernel];

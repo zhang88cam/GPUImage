@@ -1,8 +1,9 @@
 #import "ShowcaseFilterViewController.h"
 #import "SobelEdgeXGradientFilter.h"
 #import "GPUGaussianFilter.h"
-#import "GPULapacianFilter.h"
 @implementation ShowcaseFilterViewController
+
+@synthesize customKernel = customKernel_;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -60,61 +61,70 @@
         case GPUIMAGE_XSOBEL:
         {
         self.title = @"Sobel X";
-        self.filterSettingsSlider.hidden = NO;
+        self.filterSettingsSlider.hidden = YES;
         
-        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setValue:1.0];
         [self.filterSettingsSlider setMinimumValue:0.0];
         [self.filterSettingsSlider setMaximumValue:1.0];
         
         filter = [[SobelEdgeXGradientFilter alloc] init];
+        [(SobelEdgeXGradientFilter *)filter setKernel:customKernel_];
         }; break;
         
         case GPUIMAGE_YSOBEL:
         {
         self.title = @"Sobel Y";
-        self.filterSettingsSlider.hidden = NO;
+        self.filterSettingsSlider.hidden = YES;
         
-        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setValue:1.0];
         [self.filterSettingsSlider setMinimumValue:0.0];
         [self.filterSettingsSlider setMaximumValue:1.0];
         
         filter = [[SobelEdgeXGradientFilter alloc] initY];
+        [(SobelEdgeXGradientFilter *)filter setKernel:customKernel_];
+
         }; break;
         
         case GPUIMAGE_BOTHSOBEL:
         {
         self.title = @"Sobel Both";
-        self.filterSettingsSlider.hidden = NO;
+        self.filterSettingsSlider.hidden = YES;
         
-        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setValue:1.0];
         [self.filterSettingsSlider setMinimumValue:0.0];
         [self.filterSettingsSlider setMaximumValue:1.0];
         
         filter = [[SobelEdgeXGradientFilter alloc] initBoth];
+        [(SobelEdgeXGradientFilter *)filter setKernel:customKernel_];
+
         }; break;
         
         case GPUIMAGE_ADDSOBEL:
         {
         self.title = @"Sobel Add";
-        self.filterSettingsSlider.hidden = NO;
+        self.filterSettingsSlider.hidden = YES;
         
-        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setValue:1.0];
         [self.filterSettingsSlider setMinimumValue:0.0];
         [self.filterSettingsSlider setMaximumValue:1.0];
         
         filter = [[SobelEdgeXGradientFilter alloc] initAdd];
+        [(SobelEdgeXGradientFilter *)filter setKernel:customKernel_];
+
         }; break;
         
         case GPUIMAGE_Inverse:
         {
         self.title = @"Sobel Inverse";
-        self.filterSettingsSlider.hidden = NO;
+        self.filterSettingsSlider.hidden = YES;
         
-        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setValue:1.0];
         [self.filterSettingsSlider setMinimumValue:0.0];
         [self.filterSettingsSlider setMaximumValue:1.0];
         
         filter = [[SobelEdgeXGradientFilter alloc] initInverse];
+        [(SobelEdgeXGradientFilter *)filter setKernel:customKernel_];
+
         }; break;
         
         
@@ -122,26 +132,30 @@
         case GPUIMAGE_GAUSSIAN1:
         {
         self.title = @"Gaussian";
-        self.filterSettingsSlider.hidden = NO;
+        self.filterSettingsSlider.hidden = YES;
         
-        [self.filterSettingsSlider setValue:0.0];
+        [self.filterSettingsSlider setValue:1.0];
         [self.filterSettingsSlider setMinimumValue:0.0];
         [self.filterSettingsSlider setMaximumValue:1.0];
         
         filter = [[GPUGaussianFilter alloc] init];
+
+            [(GPUGaussianFilter *)filter setGaussianValues:customKernel_];
+
         }; break;
+            /*
             
-        case GPUIMAGE_LAPLACIAN:
-        {
-            self.title = @"Laplacian";
-            self.filterSettingsSlider.hidden = NO;
-            
-            [self.filterSettingsSlider setValue:0.0];
-            [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:1.0];
-            
-            filter = [[GPULapacianFilter alloc] initAdd];
-        }; break;
+//        case GPUIMAGE_LAPLACIAN:
+//        {
+//            self.title = @"Laplacian";
+//            self.filterSettingsSlider.hidden = NO;
+//            
+//            [self.filterSettingsSlider setValue:0.0];
+//            [self.filterSettingsSlider setMinimumValue:0.0];
+//            [self.filterSettingsSlider setMaximumValue:1.0];
+//            
+//            filter = [[GPULapacianFilter alloc] initAdd];
+//        }; break;
         
         
         
@@ -187,6 +201,7 @@
             
             filter = [[GPUImageCrosshatchFilter alloc] init];
         }; break;
+             */
         case GPUIMAGE_COLORINVERT:
         {
             self.title = @"Color Invert";
@@ -194,6 +209,7 @@
             
             filter = [[GPUImageColorInvertFilter alloc] init];
         }; break;
+            /*
         case GPUIMAGE_GRAYSCALE:
         {
             self.title = @"Grayscale";
@@ -201,6 +217,8 @@
             
             filter = [[GPUImageGrayscaleFilter alloc] init];
         }; break;
+             
+             */
         case GPUIMAGE_SATURATION:
         {
             self.title = @"Saturation";
@@ -245,6 +263,7 @@
             
             filter = [[GPUImageExposureFilter alloc] init];
         }; break;
+            /*
         case GPUIMAGE_SHARPEN:
         {
             self.title = @"Sharpen";
@@ -256,6 +275,7 @@
             
             filter = [[GPUImageSharpenFilter alloc] init];
         }; break;
+             */
         case GPUIMAGE_UNSHARPMASK:
         {
             self.title = @"Unsharp Mask";
@@ -269,6 +289,8 @@
             
 //            [(GPUImageUnsharpMaskFilter *)filter setIntensity:3.0];
         }; break;
+            
+            /*
         case GPUIMAGE_GAMMA:
         {
             self.title = @"Gamma";
@@ -560,6 +582,7 @@
             
             filter = [[GPUImageVignetteFilter alloc] init];
         }; break;
+
         case GPUIMAGE_GAUSSIAN:
         {
             self.title = @"Gaussian Blur";
@@ -571,6 +594,7 @@
             
             filter = [[GPUImageGaussianBlurFilter alloc] init];
         }; break;
+
         case GPUIMAGE_FASTBLUR:
         {
             self.title = @"Fast Blur";
@@ -621,20 +645,21 @@
             [(GPUImageFilterGroup *)filter setInitialFilters:[NSArray arrayWithObject:sepiaFilter]];
             [(GPUImageFilterGroup *)filter setTerminalFilter:pixellateFilter];
         }; break;
+             */
 
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
-    if (filterType == GPUIMAGE_FILECONFIG) 
-    {
-        self.title = @"File Configuration";
-        pipeline = [[GPUImageFilterPipeline alloc] initWithConfigurationFile:[[NSBundle mainBundle] URLForResource:@"SampleConfiguration" withExtension:@"plist"]
-                                                                                               input:videoCamera output:(GPUImageView*)self.view];
-        
-        [pipeline addFilter:rotationFilter atIndex:0];
-    } 
-    else 
-    {
+//    if (filterType == GPUIMAGE_FILECONFIG) 
+//    {
+//        self.title = @"File Configuration";
+//        pipeline = [[GPUImageFilterPipeline alloc] initWithConfigurationFile:[[NSBundle mainBundle] URLForResource:@"SampleConfiguration" withExtension:@"plist"]
+//                                                                                               input:videoCamera output:(GPUImageView*)self.view];
+//        
+//        [pipeline addFilter:rotationFilter atIndex:0];
+//    } 
+//    else 
+//    {
         [videoCamera addTarget:rotationFilter];
         [rotationFilter addTarget:filter];
         videoCamera.runBenchmark = YES;
@@ -649,7 +674,7 @@
 
         GPUImageView *filterView = (GPUImageView *)self.view;
         [filter addTarget:filterView];
-    } 
+//    } 
 
     [videoCamera startCameraCapture];    
 }
@@ -661,23 +686,29 @@
 {
     switch(filterType)
     {
-        case GPUIMAGE_BOTHSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_XSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_YSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_ADDSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_Inverse: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_GAUSSIAN1: [(GPUGaussianFilter *)filter setBlurSize:[(UISlider *)sender value]]; break;
+//        case GPUIMAGE_BOTHSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+//        case GPUIMAGE_XSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+//        case GPUIMAGE_YSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+//        case GPUIMAGE_ADDSOBEL: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+//        case GPUIMAGE_Inverse: [(SobelEdgeXGradientFilter *)filter setEdgeFactor:[(UISlider *)sender value]]; break;
+//        case GPUIMAGE_GAUSSIAN1: [(GPUGaussianFilter *)filter setBlurSize:[(UISlider *)sender value]]; break;
 
+
+/*
         case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;
         case GPUIMAGE_POLARPIXELLATE: [(GPUImagePolarPixellateFilter *)filter setPixelSize:CGSizeMake([(UISlider *)sender value], [(UISlider *)sender value])]; break;
+ */
         case GPUIMAGE_SATURATION: [(GPUImageSaturationFilter *)filter setSaturation:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CONTRAST: [(GPUImageContrastFilter *)filter setContrast:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)filter setExposure:[(UISlider *)sender value]]; break;
+            /*
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)filter setSharpness:[(UISlider *)sender value]]; break;
+             */
         case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
 //        case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)filter setBlurSize:[(UISlider *)sender value]]; break;
+            /*
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
         case GPUIMAGE_POSTERIZE: [(GPUImagePosterizeFilter *)filter setColorLevels:round([(UISlider*)sender value])]; break;
 		case GPUIMAGE_HAZE: [(GPUImageHazeFilter *)filter setDistance:[(UISlider *)sender value]]; break;
@@ -707,6 +738,7 @@
 
             [(GPUImageTransformFilter *)filter setTransform3D:perspectiveTransform];            
         }; break;
+             */
         default: break;
     }
 }

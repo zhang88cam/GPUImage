@@ -10,7 +10,8 @@
 		099817A9152F8142002913C9 /* SobelEdgeXGradientFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 099817A8152F8142002913C9 /* SobelEdgeXGradientFilter.m */; };
 		099817AC152F9A01002913C9 /* GPUGaussianFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 099817AB152F9A01002913C9 /* GPUGaussianFilter.m */; };
 		0D69488E1501F71900206FF8 /* SampleConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D69488D1501F71900206FF8 /* SampleConfiguration.plist */; };
-		198D7692154703C200DA930C /* GPULapacianFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 198D7691154703C200DA930C /* GPULapacianFilter.m */; };
+		19925B67154A3CFD00DB7AAC /* KernelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19925B65154A3CFD00DB7AAC /* KernelViewController.m */; };
+		19925B68154A3CFD00DB7AAC /* KernelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19925B66154A3CFD00DB7AAC /* KernelViewController.xib */; };
 		BC982B0714F046AC0001FF6F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B0614F046AC0001FF6F /* UIKit.framework */; };
 		BC982B0914F046AC0001FF6F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B0814F046AC0001FF6F /* Foundation.framework */; };
 		BC982B0B14F046AC0001FF6F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B0A14F046AC0001FF6F /* CoreGraphics.framework */; };
@@ -60,8 +61,9 @@
 		099817AA152F9A01002913C9 /* GPUGaussianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUGaussianFilter.h; sourceTree = "<group>"; };
 		099817AB152F9A01002913C9 /* GPUGaussianFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUGaussianFilter.m; sourceTree = "<group>"; };
 		0D69488D1501F71900206FF8 /* SampleConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SampleConfiguration.plist; sourceTree = "<group>"; };
-		198D7690154703C200DA930C /* GPULapacianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPULapacianFilter.h; sourceTree = "<group>"; };
-		198D7691154703C200DA930C /* GPULapacianFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPULapacianFilter.m; sourceTree = "<group>"; };
+		19925B64154A3CFD00DB7AAC /* KernelViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KernelViewController.h; sourceTree = "<group>"; };
+		19925B65154A3CFD00DB7AAC /* KernelViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KernelViewController.m; sourceTree = "<group>"; };
+		19925B66154A3CFD00DB7AAC /* KernelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KernelViewController.xib; sourceTree = "<group>"; };
 		BC982B0214F046AC0001FF6F /* FilterShowcase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FilterShowcase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC982B0614F046AC0001FF6F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BC982B0814F046AC0001FF6F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -112,8 +114,6 @@
 			children = (
 				099817A7152F8142002913C9 /* SobelEdgeXGradientFilter.h */,
 				099817A8152F8142002913C9 /* SobelEdgeXGradientFilter.m */,
-				198D7690154703C200DA930C /* GPULapacianFilter.h */,
-				198D7691154703C200DA930C /* GPULapacianFilter.m */,
 				099817AA152F9A01002913C9 /* GPUGaussianFilter.h */,
 				099817AB152F9A01002913C9 /* GPUGaussianFilter.m */,
 			);
@@ -161,9 +161,12 @@
 				BC982B1614F046AC0001FF6F /* ShowcaseAppDelegate.m */,
 				BC982B3D14F05DC10001FF6F /* ShowcaseFilterListController.h */,
 				BC982B3E14F05DC10001FF6F /* ShowcaseFilterListController.m */,
-				BC982B3514F04B3A0001FF6F /* ShowcaseFilterViewController.xib */,
+				19925B64154A3CFD00DB7AAC /* KernelViewController.h */,
+				19925B65154A3CFD00DB7AAC /* KernelViewController.m */,
+				19925B66154A3CFD00DB7AAC /* KernelViewController.xib */,
 				BC982B3314F04B3A0001FF6F /* ShowcaseFilterViewController.h */,
 				BC982B3414F04B3A0001FF6F /* ShowcaseFilterViewController.m */,
+				BC982B3514F04B3A0001FF6F /* ShowcaseFilterViewController.xib */,
 				BC982C4014F1F6C80001FF6F /* CustomFilter.fsh */,
 				BC982B0D14F046AC0001FF6F /* Supporting Files */,
 			);
@@ -273,6 +276,7 @@
 				BC982B3714F04B3A0001FF6F /* ShowcaseFilterViewController.xib in Resources */,
 				BC982BD114F1C0F00001FF6F /* WID-small.jpg in Resources */,
 				0D69488E1501F71900206FF8 /* SampleConfiguration.plist in Resources */,
+				19925B68154A3CFD00DB7AAC /* KernelViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +293,7 @@
 				BC982B3F14F05DC20001FF6F /* ShowcaseFilterListController.m in Sources */,
 				099817A9152F8142002913C9 /* SobelEdgeXGradientFilter.m in Sources */,
 				099817AC152F9A01002913C9 /* GPUGaussianFilter.m in Sources */,
-				198D7692154703C200DA930C /* GPULapacianFilter.m in Sources */,
+				19925B67154A3CFD00DB7AAC /* KernelViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

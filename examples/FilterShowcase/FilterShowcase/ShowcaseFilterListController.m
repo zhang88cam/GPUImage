@@ -1,7 +1,11 @@
 #import "ShowcaseFilterListController.h"
 #import "ShowcaseFilterViewController.h"
+#import "KernelViewController.h"
 
 @interface ShowcaseFilterListController ()
+{
+    NSArray *defaultFilters;
+}
 
 @end
 
@@ -16,11 +20,32 @@
     return self;
 }
 
+-(void)setFilters
+{
+    NSArray *sobelYFilter = [[NSArray alloc] initWithObjects:
+                             [NSNumber numberWithFloat:-1.0], [NSNumber numberWithFloat:-2.0],[NSNumber numberWithFloat:-1.0],
+                             [NSNumber numberWithFloat:0.0],[NSNumber numberWithFloat:0.0],[NSNumber numberWithFloat:0.0],
+                             [NSNumber numberWithFloat:1.0], [NSNumber numberWithFloat:2.0],[NSNumber numberWithFloat:1.0],
+                             nil];
+    NSArray *sobelXFilter = [[NSArray alloc] initWithObjects:
+                            [NSNumber numberWithFloat:-1.0], [NSNumber numberWithFloat:0.0],[NSNumber numberWithFloat:1.0],
+                            [NSNumber numberWithFloat:-2.0],[NSNumber numberWithFloat:0.0],[NSNumber numberWithFloat:2.0],
+                            [NSNumber numberWithFloat:-1.0], [NSNumber numberWithFloat:0.0],[NSNumber numberWithFloat:1.0],
+                            nil];
+    NSArray *gaussianFilter = [[NSArray alloc] initWithObjects:
+                               [NSNumber numberWithFloat:1.0],[NSNumber numberWithFloat:2.0],[NSNumber numberWithFloat:1.0], 
+                               [NSNumber numberWithFloat:2.0],[NSNumber numberWithFloat:4.0],[NSNumber numberWithFloat:2.0], 
+                               [NSNumber numberWithFloat:1.0],[NSNumber numberWithFloat:2.0],[NSNumber numberWithFloat:1.0], 
+                               nil];
+    defaultFilters = [[NSArray alloc] initWithObjects:sobelXFilter,sobelYFilter, gaussianFilter, nil];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     self.title = @"Filter List";
+    [self setFilters];
 }
 
 - (void)viewDidUnload
@@ -34,6 +59,8 @@
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+
 
 #pragma mark - Table view data source
 
@@ -67,7 +94,7 @@
         case GPUIMAGE_ADDSOBEL: cell.textLabel.text = @"Sobel Add"; break;
         case GPUIMAGE_Inverse: cell.textLabel.text = @"Sobel Inverse"; break;
         case GPUIMAGE_GAUSSIAN1: cell.textLabel.text = @"Guassian"; break;
-        case GPUIMAGE_LAPLACIAN:cell.textLabel.text = @"Laplacian"; break;
+//        case GPUIMAGE_LAPLACIAN:cell.textLabel.text = @"Laplacian"; break;
 
         
         
@@ -78,8 +105,9 @@
 		case GPUIMAGE_CONTRAST: cell.textLabel.text = @"Contrast"; break;
 		case GPUIMAGE_BRIGHTNESS: cell.textLabel.text = @"Brightness"; break;
 		case GPUIMAGE_EXPOSURE: cell.textLabel.text = @"Exposure"; break;
-		case GPUIMAGE_SHARPEN: cell.textLabel.text = @"Sharpen"; break;
+//		case GPUIMAGE_SHARPEN: cell.textLabel.text = @"Sharpen"; break;
 		case GPUIMAGE_UNSHARPMASK: cell.textLabel.text = @"Unsharp mask"; break;
+    /*
 		case GPUIMAGE_GAMMA: cell.textLabel.text = @"Gamma"; break;
 		case GPUIMAGE_HAZE: cell.textLabel.text = @"Haze"; break;
 		case GPUIMAGE_THRESHOLD: cell.textLabel.text = @"Threshold"; break;
@@ -87,7 +115,9 @@
         case GPUIMAGE_CROP: cell.textLabel.text = @"Crop"; break;
         case GPUIMAGE_TRANSFORM: cell.textLabel.text = @"Transform (2-D)"; break;
         case GPUIMAGE_TRANSFORM3D: cell.textLabel.text = @"Transform (3-D)"; break;
+     */
         case GPUIMAGE_COLORINVERT: cell.textLabel.text = @"Color invert"; break;
+            /*
         case GPUIMAGE_GRAYSCALE: cell.textLabel.text = @"Grayscale"; break;
 		case GPUIMAGE_SEPIA: cell.textLabel.text = @"Sepia tone"; break;
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
@@ -125,6 +155,7 @@
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
         case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;
         case GPUIMAGE_FILTERGROUP: cell.textLabel.text = @"Filter Group"; break;
+     */
 	}
     
     return cell;
@@ -174,7 +205,41 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ShowcaseFilterViewController *filterViewController = [[ShowcaseFilterViewController alloc] initWithFilterType:indexPath.row];
-    [self.navigationController pushViewController:filterViewController animated:YES];
+//    [self.navigationController pushViewController:filterViewController animated:YES];
+    KernelViewController *kernelViewController = [[KernelViewController alloc] init];
+    kernelViewController.filterType = indexPath.row;
+    switch (indexPath.row) {
+        case GPUIMAGE_XSOBEL:
+            kernelViewController.defaultFilter = [defaultFilters objectAtIndex:0];
+            [self.navigationController pushViewController:kernelViewController animated:YES];
+            break;
+        case GPUIMAGE_YSOBEL:
+            kernelViewController.defaultFilter = [defaultFilters objectAtIndex:1];
+            [self.navigationController pushViewController:kernelViewController animated:YES];
+            break;        
+        case GPUIMAGE_BOTHSOBEL:
+            kernelViewController.defaultFilter = [defaultFilters objectAtIndex:0];
+            [self.navigationController pushViewController:kernelViewController animated:YES];
+            break;
+        case GPUIMAGE_ADDSOBEL:
+            kernelViewController.defaultFilter = [defaultFilters objectAtIndex:0];
+            [self.navigationController pushViewController:kernelViewController animated:YES];
+            break;
+        case GPUIMAGE_Inverse:
+            kernelViewController.defaultFilter = [defaultFilters objectAtIndex:0];
+            [self.navigationController pushViewController:kernelViewController animated:YES];
+            break;
+        case GPUIMAGE_GAUSSIAN1:
+            kernelViewController.defaultFilter = [defaultFilters objectAtIndex:2];
+            [self.navigationController pushViewController:kernelViewController animated:YES];
+            break;
+            
+        default:
+            [self.navigationController pushViewController:filterViewController animated:YES];
+
+            break;
+    }
+//    [self.navigationController pushViewController:kernelViewController animated:YES];
 }
 
 @end
